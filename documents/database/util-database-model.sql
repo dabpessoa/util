@@ -52,6 +52,6 @@ ALTER TABLE util.dominio ADD CONSTRAINT fk_dominio_modulo
 FOREIGN KEY (fk_modulo)
 REFERENCES controle_acesso.modulo (id)
 ON UPDATE NO ACTION
-ON DELETE NO ACTION;
+ON DELETE NO ACTION
 NOT DEFERRABLE;
 
