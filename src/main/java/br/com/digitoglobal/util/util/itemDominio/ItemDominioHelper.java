@@ -1,6 +1,7 @@
 package br.com.digitoglobal.util.util.itemDominio;
 
 import br.com.digitoglobal.util.bean.model.ItemDominio;
+import me.dabpessoa.framework.service.SpringContextProvider;
 
 public class ItemDominioHelper implements IItemDominio {
 
@@ -9,21 +10,23 @@ public class ItemDominioHelper implements IItemDominio {
     private Long codigo;
     private String nomeDominio;
     private String nomeModulo;
+    private SpringContextProvider springContextProvider;
 
-    public ItemDominioHelper(String label, String nomeDominio, String nomeModulo) {
-        this(null, null, label, nomeDominio, nomeModulo);
+    public ItemDominioHelper(String label, String nomeDominio, String nomeModulo, SpringContextProvider springContextProvider) {
+        this(null, null, label, nomeDominio, nomeModulo, springContextProvider);
     }
 
-    public ItemDominioHelper(Long codigo, String label) {
-        this(null, codigo, label, null, null);
+    public ItemDominioHelper(Long codigo, String label, SpringContextProvider springContextProvider) {
+        this(null, codigo, label, null, null, springContextProvider);
     }
 
-    public ItemDominioHelper(ItemDominio itemDominio, Long codigo, String label, String nomeDominio, String nomeModulo) {
+    public ItemDominioHelper(ItemDominio itemDominio, Long codigo, String label, String nomeDominio, String nomeModulo, SpringContextProvider springContextProvider) {
         this.itemDominio = itemDominio;
         this.codigo = codigo;
         this.label = label;
         this.nomeDominio = nomeDominio;
         this.nomeModulo = nomeModulo;
+        this.springContextProvider = springContextProvider;
     }
 
     @Override
@@ -41,7 +44,7 @@ public class ItemDominioHelper implements IItemDominio {
 
     @Override
     public void preencherItemAPartirDoBancoDeDados() {
-        itemDominio = buscarNoBancoDeDados(this.label, this.nomeDominio, this.nomeModulo);
+        itemDominio = buscarNoBancoDeDados(this.label, this.nomeDominio, this.nomeModulo, springContextProvider);
     }
 
     public ItemDominio getItemDominio() {
