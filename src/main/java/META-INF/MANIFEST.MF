@@ -1,7 +1,3 @@
 Manifest-Version: 1.0
 Class-Path: javaFrameworkSpringJPA_1.0.0.jar
-<<<<<<< HEAD
-Main-Class: 
-=======
->>>>>>> b9bf6d3f4d65d8df0ea17e0c174b740a829104cc
 

@@ -27,7 +27,7 @@ public interface IItemDominio {
 		return itemDominioService.findByLabelAndCodigoDominio(label, dominio.getId());
 	}
 
-	default Dominio findDominio(Modulo modulo, String labelDominio, SpringContextProvider springContextProvider) {
+	static Dominio findDominio(Modulo modulo, String labelDominio, SpringContextProvider springContextProvider) {
 		if (modulo == null || modulo.getId() == null) {
 			throw new RuntimeException("Não é possível consultar um Domínio pois a identificação do múdulo está vazia. Label do Domínio: "+labelDominio);
 		}
@@ -42,7 +42,7 @@ public interface IItemDominio {
 		return dominio;
 	}
 
-	default Modulo findModulo(String labelModulo, SpringContextProvider springContextProvider) {
+	static Modulo findModulo(String labelModulo, SpringContextProvider springContextProvider) {
 		if (labelModulo == null) {
 			throw new RuntimeException("Não é possível consultar 'Módulo' pois o label está vazio.");
 		}

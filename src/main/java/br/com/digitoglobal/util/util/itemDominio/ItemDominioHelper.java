@@ -17,6 +17,13 @@ public class ItemDominioHelper implements IItemDominio {
         initItemDominioHelper(itemDominio, springContextProvider);
     }
 
+    public ItemDominioHelper(String label, String labelDominio, Modulo modulo, SpringContextProvider springContextProvider) {
+        ItemDominio itemDominio = new ItemDominio();
+        itemDominio.setLabel(label);
+        itemDominio.setDominio(new Dominio(modulo, labelDominio));
+        initItemDominioHelper(itemDominio, springContextProvider);
+    }
+
     public ItemDominioHelper(String label, Dominio dominio, SpringContextProvider springContextProvider) {
         ItemDominio itemDominio = new ItemDominio();
         itemDominio.setLabel(label);
@@ -47,8 +54,8 @@ public class ItemDominioHelper implements IItemDominio {
 
     @Override
     public ItemDominio getItem(boolean deveBuscarDoBancoDeDados) {
-        Modulo modulo = findModulo(getLabelModulo(), springContextProvider);
-        Dominio dominio = findDominio(modulo, getLabelDominio(), springContextProvider);
+        Modulo modulo = IItemDominio.findModulo(getLabelModulo(), springContextProvider);
+        Dominio dominio = IItemDominio.findDominio(modulo, getLabelDominio(), springContextProvider);
         return getItem(dominio, deveBuscarDoBancoDeDados);
     }
 
