@@ -1,19 +1,18 @@
 package br.com.digitoglobal.util.util.itemDominio;
 
-<<<<<<< HEAD
+import br.com.digitoglobal.accesscontrol.model.Modulo;
+import br.com.digitoglobal.accesscontrol.service.ModuloService;
 import br.com.digitoglobal.util.bean.model.Dominio;
-=======
->>>>>>> b9bf6d3f4d65d8df0ea17e0c174b740a829104cc
 import br.com.digitoglobal.util.bean.model.ItemDominio;
+import br.com.digitoglobal.util.service.DominioService;
 import br.com.digitoglobal.util.service.ItemDominioService;
 import me.dabpessoa.framework.service.SpringContextProvider;
 
 public interface IItemDominio {
-<<<<<<< HEAD
 
 	ItemDominio getItem();
-	ItemDominio getItem(Dominio dominio);
 	ItemDominio getItem(boolean deveBuscarDoBancoDeDados);
+	ItemDominio getItem(Dominio dominio);
 	ItemDominio getItem(Dominio dominio, boolean deveBuscarDoBancoDeDados);
 
 	default ItemDominio buscarItemAPartirDoBancoDeDados(String label, Dominio dominio, SpringContextProvider springContextProvider) {
@@ -26,16 +25,32 @@ public interface IItemDominio {
 
 		ItemDominioService itemDominioService = springContextProvider.getBean(ItemDominioService.class);
 		return itemDominioService.findByLabelAndCodigoDominio(label, dominio.getId());
-=======
-	ItemDominio getItem(boolean deveBuscarDoBancoDeDados);
-	ItemDominio getItem();
-	void preencherItemAPartirDoBancoDeDados();
+	}
 
-	default ItemDominio buscarNoBancoDeDados(String label, String nomeDominio, String nomeModulo, SpringContextProvider springContextProvider) {
-		if (label == null) return null;
-		ItemDominioService itemDominioService = springContextProvider.getBean(ItemDominioService.class);
-		return itemDominioService.findByLabelAndDominioAndModulo(label, nomeDominio, nomeModulo);
->>>>>>> b9bf6d3f4d65d8df0ea17e0c174b740a829104cc
+	default Dominio findDominio(Modulo modulo, String labelDominio, SpringContextProvider springContextProvider) {
+		if (modulo == null || modulo.getId() == null) {
+			throw new RuntimeException("Não é possível consultar um Domínio pois a identificação do múdulo está vazia. Label do Domínio: "+labelDominio);
+		}
+
+		DominioService dominioService = springContextProvider.getBean(DominioService.class);
+		Dominio dominio = dominioService.findByLabelAndCodigoModulo(labelDominio, modulo.getId());
+
+		if (dominio == null) {
+			throw new RuntimeException("O label '"+labelDominio+"' não existe na tabela de domínios no banco de dados. Favor adicioná-lo.");
+		}
+
+		return dominio;
+	}
+
+	default Modulo findModulo(String labelModulo, SpringContextProvider springContextProvider) {
+		if (labelModulo == null) {
+			throw new RuntimeException("Não é possível consultar 'Módulo' pois o label está vazio.");
+		}
+
+		ModuloService moduloService = springContextProvider.getBean(ModuloService.class);
+		Modulo modulo = moduloService.findByLabel(labelModulo);
+
+		return modulo;
 	}
 
 }

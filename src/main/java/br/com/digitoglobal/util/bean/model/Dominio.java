@@ -27,6 +27,10 @@ public class Dominio  extends BaseEntity {
         this(null, null, null);
     }
 
+    public Dominio(Modulo modulo, String label) {
+        this(modulo, label, null);
+    }
+
     public Dominio(Modulo modulo, String label, String descricao) {
         this.modulo = modulo;
         this.label = label;
