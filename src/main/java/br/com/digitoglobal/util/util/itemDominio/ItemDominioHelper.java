@@ -67,7 +67,11 @@ public class ItemDominioHelper implements IItemDominio {
     @Override
     public ItemDominio getItem(Dominio dominio, boolean deveBuscarDoBancoDeDados) {
         if (!isItemDominioOK() && deveBuscarDoBancoDeDados) {
-            itemDominio = buscarItemAPartirDoBancoDeDados(getLabelItem(), dominio, springContextProvider);
+            String labelItem = getLabelItem();
+            itemDominio = buscarItemAPartirDoBancoDeDados(labelItem, dominio, springContextProvider);
+            if (itemDominio == null) {
+                throw new RuntimeException("Não foi possível localizar o item de domínio para o label: "+labelItem+", e de domínio: "+(dominio != null ? dominio.getLabel() : null));
+            }
         }
         return itemDominio;
     }
