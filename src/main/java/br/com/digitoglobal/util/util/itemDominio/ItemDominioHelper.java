@@ -8,6 +8,7 @@ import me.dabpessoa.framework.service.SpringContextProvider;
 public class ItemDominioHelper implements IItemDominio {
 
     private ItemDominio itemDominio;
+    private Dominio dominio;
     private SpringContextProvider springContextProvider;
 
     public ItemDominioHelper(String label, String labelDominio, String labelModulo, SpringContextProvider springContextProvider) {
@@ -54,9 +55,10 @@ public class ItemDominioHelper implements IItemDominio {
 
     @Override
     public ItemDominio getItem(boolean deveBuscarDoBancoDeDados) {
-        Modulo modulo = IItemDominio.findModulo(getLabelModulo(), springContextProvider);
-        Dominio dominio = IItemDominio.findDominio(modulo, getLabelDominio(), springContextProvider);
-        return getItem(dominio, deveBuscarDoBancoDeDados);
+        if (deveBuscarDoBancoDeDados) {
+            fetchItemDominio(null);
+        }
+        return itemDominio;
     }
 
     @Override
@@ -66,17 +68,43 @@ public class ItemDominioHelper implements IItemDominio {
 
     @Override
     public ItemDominio getItem(Dominio dominio, boolean deveBuscarDoBancoDeDados) {
-        if (!isItemDominioOK() && deveBuscarDoBancoDeDados) {
+        if (deveBuscarDoBancoDeDados) {
+            fetchItemDominio(dominio);
+        }
+        return itemDominio;
+    }
+
+    public Dominio getDominio() {
+        return dominio;
+    }
+
+    public void setDominio(Dominio dominio) {
+        this.dominio = dominio;
+    }
+
+    private void fetchDominio() {
+        if (dominio == null) {
+            Modulo modulo = IItemDominio.findModulo(getLabelModulo(), springContextProvider);
+            dominio = IItemDominio.findDominio(modulo, getLabelDominio(), springContextProvider);
+        }
+    }
+
+    private ItemDominio fetchItemDominio(Dominio dominio) {
+        if (!isItemDominioIdsPreenchidos()) {
+            if (dominio == null) {
+                fetchDominio();
+                dominio = this.dominio;
+            }
+
             String labelItem = getLabelItem();
             itemDominio = buscarItemAPartirDoBancoDeDados(labelItem, dominio, springContextProvider);
             if (itemDominio == null) {
                 throw new RuntimeException("Não foi possível localizar o item de domínio para o label: "+labelItem+", e de domínio: "+(dominio != null ? dominio.getLabel() : null));
             }
-        }
-        return itemDominio;
+        } return itemDominio;
     }
 
-    private boolean isItemDominioOK() {
+    private boolean isItemDominioIdsPreenchidos() {
         if (getItemDominio() == null || getItemDominio().getId() == null || getItemDominio().getLabel() == null || getItemDominio().getDominio() == null ||
                 getItemDominio().getDominio().getId() == null || getItemDominio().getDominio().getModulo() == null || getItemDominio().getDominio().getModulo().getId() == null) {
             return false;
