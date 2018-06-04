@@ -27,10 +27,10 @@ public class ItemDominioService extends GenericAbstractService<ItemDominio, Long
 	public ItemDominio findItemDominio(String labelModulo, String labelDominio, String labelItem) {
 		Modulo modulo = moduloService.findByLabel(labelModulo);
 		Dominio dominio = dominioService.findDominio(modulo, labelDominio);
-		return findItemDominio(dominio, labelItem, springContextProvider);
+		return findItemDominio(dominio, labelItem);
 	}
 
-	public ItemDominio findItemDominio(Dominio dominio, String labelItem, SpringContextProvider springContextProvider) {
+	public ItemDominio findItemDominio(Dominio dominio, String labelItem) {
 		ItemDominio itemDominio = findItemDominio(labelItem, dominio);
 		if (itemDominio == null) {
 			throw new RuntimeException("Não foi possível localizar o item de domínio para o label: "+labelItem+", e de domínio: "+(dominio != null ? dominio.getLabel() : null));
