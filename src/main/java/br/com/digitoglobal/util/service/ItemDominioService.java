@@ -1,10 +1,14 @@
 package br.com.digitoglobal.util.service;
 
+import br.com.digitoglobal.accesscontrol.model.Modulo;
+import br.com.digitoglobal.accesscontrol.service.ModuloService;
+import br.com.digitoglobal.util.bean.model.Dominio;
 import br.com.digitoglobal.util.bean.model.ItemDominio;
 import br.com.digitoglobal.util.dao.ItemDominioDao;
 import me.dabpessoa.framework.exceptions.ApplicationRuntimeException;
 import me.dabpessoa.framework.service.GenericAbstractService;
 import me.dabpessoa.framework.service.SpringContextProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,9 +16,36 @@ import java.util.List;
 @Service
 public class ItemDominioService extends GenericAbstractService<ItemDominio, Long, ItemDominioDao, SpringContextProvider> {
 
+	@Autowired ModuloService moduloService;
+	@Autowired DominioService dominioService;
+
 	@Override
 	public List<ItemDominio> find(ItemDominio entity) {
 		return findByHQLEntityFilter(entity, "descricao");
+	}
+
+	public ItemDominio findItemDominio(String labelModulo, String labelDominio, String labelItem) {
+		Modulo modulo = moduloService.findByLabel(labelModulo);
+		Dominio dominio = dominioService.findDominio(modulo, labelDominio);
+		return findItemDominio(dominio, labelItem, springContextProvider);
+	}
+
+	public ItemDominio findItemDominio(Dominio dominio, String labelItem, SpringContextProvider springContextProvider) {
+		ItemDominio itemDominio = findItemDominio(labelItem, dominio);
+		if (itemDominio == null) {
+			throw new RuntimeException("Não foi possível localizar o item de domínio para o label: "+labelItem+", e de domínio: "+(dominio != null ? dominio.getLabel() : null));
+		}
+		return itemDominio;
+	}
+
+	public ItemDominio findItemDominio(String label, Dominio dominio) {
+		if (dominio == null) {
+			throw new RuntimeException("Não é possível consultar 'Item de Domínio' pois a identificação do 'Domínio' está vazia.");
+		}
+		if (label == null) {
+			throw new RuntimeException("Não é possível consultar 'Item de Domínio' pois o label está vazio.");
+		}
+		return findByLabelAndCodigoDominio(label, dominio.getId());
 	}
 
 	public ItemDominio findByLabelAndCodigoDominio(String label, Long idDominio) {
@@ -29,13 +60,6 @@ public class ItemDominioService extends GenericAbstractService<ItemDominio, Long
 			throw new ApplicationRuntimeException("Na pesquisa de itens de domínio, os campos label e módulo são obrigatórios");
 		}
 		return getRepository().findByLabelAndCodigoModulo(label, idModulo);
-	}
-
-	public ItemDominio findByLabelAndDominioAndModulo(String label, String nomeDominio, String nomeModulo) {
-		if (label == null || label.isEmpty() || nomeDominio == null || nomeDominio.isEmpty() || nomeModulo == null || nomeModulo.isEmpty()) {
-			throw new ApplicationRuntimeException("Na pesquisa de itens de domínio, os campos label, nome do domínio e nome do módulo devem estar preenchidos. Valores => label: "+label+", Nome do Domínio: "+nomeDominio+", Nome do Módulo: "+nomeModulo);
-		}
-		return getRepository().findByLabelAndDominioAndModulo(label, nomeDominio, nomeModulo);
 	}
 	
 }
