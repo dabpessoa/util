@@ -61,5 +61,19 @@ public class ItemDominioService extends GenericAbstractService<ItemDominio, Long
 		}
 		return getRepository().findByLabelAndCodigoModulo(label, idModulo);
 	}
+
+	public List<ItemDominio> findByDominioAndModulo(Long idDominio, Long idModulo) {
+		if (idDominio == null || idModulo == null) {
+			throw new ApplicationRuntimeException("O módulo ou o domínio estão vazios.");
+		}
+		return getRepository().findByDominioAndModulo(idDominio, idModulo);
+	}
+
+	public List<ItemDominio> findByDominioLabelAndModulo(String moduloLabel, Long idModulo) {
+		if (moduloLabel == null || moduloLabel.isEmpty() || idModulo == null) {
+			throw new ApplicationRuntimeException("O label do módulo está vazio para a consulta de itens de domínio.");
+		}
+		return getRepository().findByDominioLabelAndModulo(moduloLabel, idModulo);
+	}
 	
 }
